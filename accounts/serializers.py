@@ -1,5 +1,8 @@
+from curses.ascii import US
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
+
+from models import User, CoreMemberProfile, ProfessorProfile
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -23,3 +26,24 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.save()
 
         return user
+
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        exclude = ['email', 'phone_number', 'updated_at', 'profile_picture']
+
+
+class CoreMemberProfileSerializer(serializers.ModelSerializer):
+    user_info = UserSerializer()
+
+    class Meta:
+        model = CoreMemberProfile
+        fields = ['user_info', 'start_date', 'end_date', 'role']
+
+class ProfessorProfileSerializer(serializers.ModelSerializer):
+    user_info = UserSerializer()
+    class Meta:
+        model = ProfessorProfile
+        fields = ['user_info', 'start_date', 'end_date', 'description']
