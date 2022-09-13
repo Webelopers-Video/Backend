@@ -19,6 +19,11 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = '__all__'
 
+    def validate(self, data):
+        if data['enroll_start_time'] > data['enroll_end_time'] \
+            or data['start_date'] > data['end_date']:
+            raise serializers.ValidationError("Invalid date")
+        return data
 
 class EventEnrollmentSerializer(serializers.ModelSerializer):
     class Meta:
